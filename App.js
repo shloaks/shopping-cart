@@ -1,12 +1,29 @@
-import Header from "./components/Header";
-import Main from "./components/Main";
-import Basket from "./components/Basket";
+import Header from "./Header";
+import Main from "./Main";
+import Basket from "./Basket";
 import data from "./data";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 function App() {
   const { products } = data;
   const [items, setItems] = useState(products);
   const [cartItems, setCartItems] = useState([]);
+  const [prev, setPrev] = useState(false);
+  const [next, setNext] = useState(true);
+  const elementsPerPage = 3;
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    setProductsTobeShown(index);
+  }, [index]);
+
+  const setProductsTobeShown = (i) => {
+    const startIndex = elementsPerPage * i;
+    const endIndex = elementsPerPage * (i + 1);
+    setPrev(!(startIndex === 0));
+    setNext(endIndex <= products.length);
+    setItems(products.slice(startIndex, endIndex));
+  };
+
   const onAdd = (product) => {
     const exist = cartItems.find((x) => x.id === product.id);
     if (exist) {
@@ -47,7 +64,14 @@ function App() {
         filterItems={filterItems}
       ></Header>
       <div className="row">
-        <Main products={items} onAdd={onAdd}></Main>
+        <Main
+          products={items}
+          onAdd={onAdd}
+          prev={prev}
+          next={next}
+          index={index}
+          setIndex={setIndex}
+        ></Main>
         <Basket
           cartItems={cartItems}
           onAdd={onAdd}
