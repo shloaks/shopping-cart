@@ -34,7 +34,7 @@ function App() {
 
   const filterItems = (search) => {
     setItems(
-      items.filter(({ name }) => {
+      products.filter(({ name }) => {
         return name == search;
       })
     );
